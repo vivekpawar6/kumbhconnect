@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kumbh Connect</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f4f9;
+    }
+    header {
+      background: #ba5370;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-left { flex: 1; }
+    .header-middle { flex: 2; display: flex; justify-content: center; }
+    .search-bar {
+      width: 80%;
+      max-width: 400px;
+      padding: 10px 16px;
+      border-radius: 25px;
+      border: none;
+      font-size: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+    .icon {
+      font-size: 20px;
+      cursor: pointer;
+      background: white;
+      color: #ba5370;
+      padding: 6px 10px;
+      border-radius: 50%;
+    }
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 40px;
+      right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .dropdown p {
+      margin: 0;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .dropdown p:hover { background: #f4f4f9; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+      font-size: 1.1rem;
+    }
+    .card:hover { transform: scale(1.05); }
+
+    .chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      width: 300px;
+      height: 400px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .chatbot-header {
+      background: #ba5370;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+    .chatbot-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 0.9rem;
+    }
+    .chatbot-input {
+      display: flex;
+      border-top: 1px solid #ccc;
+    }
+    .chatbot-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+    }
+    .chatbot-input button {
+      background: #ba5370;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  // Login check
+  const loggedInUser = localStorage.getItem("loggedInUser");
+  if (!loggedInUser) {
+    window.location.href = "login.html";
+  }
+</script>
+
+<header>
+  <div class="header-left">
+    <h1>Welcome To Kumbh Connect</h1>
+    <p>NAMASTE PILGRIM'S🙏</p>
+  </div>
+
+  <div class="header-middle">
+    <input type="text" class="search-bar" placeholder="Search ghats, temples, camps...">
+  </div>
+
+  <div class="header-right">
+    <div class="icon">🔔</div>
+    <div class="icon">👤</div>
+    <div class="icon" onclick="toggleMenu()">☰</div>
+    <div class="dropdown" id="dropdownMenu">
+      <p onclick="logout()">Logout</p>
+    </div>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="card">🛡️ Help Center</div>
+  <div class="card">🌊 Ghats & Kunds</div>
+  <div class="card">🏛️ Temples</div>
+  <div class="card">📅 Events & Rituals</div>
+  <div class="card">🗺️ Map View</div>
+  <div class="card">🏕️ Camps & Facilities</div>
+  <div class="card">💧 Water & Stores</div>
+  <div class="card">💬 Chatbot Help</div>
+</div>
+
+<div class="chatbot">
+  <div class="chatbot-header">🤖 Kumbh Chatbot</div>
+  <div class="chatbot-messages" id="chatMessages">
+    <p><b>Bot:</b> Namaste! How can I help you today?</p>
+  </div>
+  <div class="chatbot-input">
+    <input type="text" id="chatInput" placeholder="Ask something...">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+  function toggleMenu() {
+    const menu = document.getElementById("dropdownMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    alert("You have been logged out.");
+    window.location.href = "login.html";
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const messages = document.getElementById("chatMessages");
+    const userText = input.value.trim();
+    if(userText) {
+      messages.innerHTML += `<p><b>You:</b> ${userText}</p>`;
+      let reply = "Sorry, I don’t understand.";
+      if(userText.toLowerCase().includes("nearest ghat")) {
+        reply = "The nearest ghat is Ramkund, 2km away.";
+      }
+      messages.innerHTML += `<p><b>Bot:</b> ${reply}</p>`;
+      input.value = "";
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }
+</script>
+
+</body>
+</html>
